@@ -1,3 +1,8 @@
+/* 
+ Simple media keyboard project
+ (c) Stuart Teasdale 2020
+ 
+*/ 
 #include<Encoder.h>
 #include<HID-Project.h>
 
@@ -10,7 +15,7 @@ int RXLED = 17;
 #define FALSE 0
 
 // 5 buttons and the encoder push
-const ConsumerKeycode KEYCONF[6] = {MEDIA_PREVIOUS,MEDIA_STOP,MEDIA_PLAY_PAUSE,MEDIA_NEXT,CONSUMER_SCREENSAVER,MEDIA_VOL_MUTE};
+const ConsumerKeycode KEYCONF[6] = {MEDIA_PREVIOUS,MEDIA_STOP,MEDIA_PLAY_PAUSE,MEDIA_NEXT,CONSUMER_EXPLORER,MEDIA_VOL_MUTE};
 
 Encoder volume_control(2,3);
 
