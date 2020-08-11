@@ -5,17 +5,8 @@
 */ 
 #include<Encoder.h>
 #include<HID-Project.h>
+#include "ButtonHID.h"
 
-int core_button_pin[] = {5,6,7,8,9};
-int extra_button = 4;
-const int core_button_count = 5;
-int vol;
-int RXLED = 17;
-#define TRUE 1
-#define FALSE 0
-
-// 5 buttons and the encoder push
-const ConsumerKeycode KEYCONF[6] = {MEDIA_PREVIOUS,MEDIA_STOP,MEDIA_PLAY_PAUSE,MEDIA_NEXT,CONSUMER_EXPLORER,MEDIA_VOL_MUTE};
 
 Encoder volume_control(2,3);
 
@@ -23,10 +14,10 @@ void setup() {
   //start serial connection
   //Serial.begin(9600);
   //configure pins as an input and enable the internal pull-up resistor
-  for (int button=0; button<core_button_count; button++) {
-    pinMode(core_button_pin[button], INPUT_PULLUP);
+  for (int button=0; button<button_count; button++) {
+    pinMode(button_pin[button], button_pin_mode[button]);
   }
-  pinMode(extra_button,INPUT);
+  
   Consumer.begin();
 }
 
@@ -38,32 +29,19 @@ int rotary_change() {
   else return 0;
 }
 
-void buttons_read(int buttons[]){
-  for (int button=0;button < core_button_count;button++){
-    buttons[button] = !digitalRead(core_button_pin[button]);
-  }
-  buttons[core_button_count]=!digitalRead(extra_button);
-}
-
 
 void loop() {
-  static int all_button_state[core_button_count+1];
-  static int button_press_already_sent[core_button_count+1];
   
-  //read the pushbutton values
-  buttons_read(all_button_state);
-    
-    //Debounce button check
-
-  for (int i=0;i<core_button_count + 1 ;i++){
-    if (all_button_state[i]){
-      if (!button_press_already_sent[i]){
-        Consumer.write(KEYCONF[i]);
-        button_press_already_sent[i]=TRUE;
+  for (int i=0; i < button_count; i++){
+    button[i].pressed = !digitalRead(button[i].pin);
+    if (button[i].pressed){
+      if (!button[i].press_sent){
+        Consumer.write(button[i].key);
+        button[i].press_sent=true;
         }
       }
     else {
-      button_press_already_sent[i]=FALSE;
+      button[i].press_sent=false;
     }
   //Serial.print(all_button_state[i]);Serial.print(" | ");
   }
